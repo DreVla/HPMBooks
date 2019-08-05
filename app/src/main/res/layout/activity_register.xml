@@ -16,14 +16,14 @@
         android:layout_margin="16dp"/>
 
     <EditText
-        android:id="@+id/register_username_email"
+        android:id="@+id/register_email_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/register_email"
         android:layout_margin="16dp"/>
 
     <EditText
-        android:id="@+id/register_username_password"
+        android:id="@+id/register_pass_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/register_password"
@@ -31,7 +31,7 @@
         android:layout_margin="16dp"/>
 
     <EditText
-        android:id="@+id/register_username_passwordcheck"
+        android:id="@+id/register_passcheck_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/register_passwordcheck"
