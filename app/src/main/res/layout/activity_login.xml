@@ -9,16 +9,19 @@
     android:gravity="center">
 
     <EditText
+        android:id="@+id/login_email_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/register_email"
         android:layout_margin="16dp"/>
 
     <EditText
+        android:id="@+id/login_password_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/register_password"
-        android:layout_margin="16dp"/>
+        android:layout_margin="16dp"
+        android:inputType="textPassword"/>
 
     <Button
         android:layout_width="wrap_content"

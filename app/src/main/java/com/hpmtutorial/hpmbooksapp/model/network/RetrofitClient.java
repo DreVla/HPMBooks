@@ -3,7 +3,8 @@ package com.hpmtutorial.hpmbooksapp.model.network;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class RetrofitClientInstance {
+public class RetrofitClient {
+
     private static Retrofit retrofit;
     private static final String BASE_URL = "https://ancient-earth-13943.herokuapp.com/";
 
