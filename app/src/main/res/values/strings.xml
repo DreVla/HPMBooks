@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">HPMBooksApp</string>
+    <string name="welcome_view_message_string">Welcome Reader!</string>
+    <string name="welcome_view_login_string">Login</string>
+    <string name="welcome_view_register_string">Register</string>
+    <string name="register_username">Username</string>
+    <string name="register_email">Email</string>
+    <string name="register_password">Password</string>
+    <string name="register_passwordcheck">Check Password</string>
+    <string name="register_button_register">Register</string>
+</resources>
