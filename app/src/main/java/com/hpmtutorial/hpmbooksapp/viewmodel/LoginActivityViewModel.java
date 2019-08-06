@@ -24,7 +24,6 @@ public class LoginActivityViewModel extends ViewModel {
 
     private UserAPI userAPI;
     private MutableLiveData<String> uiLiveData;
-    private int i = 1;
     private String token;
 
     public MutableLiveData<String> getCurrentUi(){
@@ -46,7 +45,6 @@ public class LoginActivityViewModel extends ViewModel {
                         //use your header value
                         Log.d("Login Token", "onResponse: token is " + token);
                     }
-                    showResponse(response.body().toString());
                     getCurrentUi().setValue(token);
                 }
             }

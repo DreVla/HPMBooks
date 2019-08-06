@@ -16,7 +16,6 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.hpmtutorial.hpmbooksapp.R;
 import com.hpmtutorial.hpmbooksapp.viewmodel.LoginActivityViewModel;
-import com.hpmtutorial.hpmbooksapp.viewmodel.RegisterActivityViewModel;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -40,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 Toast.makeText(LoginActivity.this, "Success!" + " New token is: " + newToken, Toast.LENGTH_SHORT).show();
                 saveToSharedPref(newToken);
-                Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
+                Intent intent = new Intent(getApplicationContext(), BooksActivity.class);
                 startActivity(intent);
             }
         };
@@ -59,12 +58,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void saveToSharedPref(String token){
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        Context context = this;
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(getString(R.string.auth_token), token);
         editor.apply();
-
-        String readToken = sharedPref.getString(getString(R.string.auth_token), null);
-        Log.d("SharedPref Token", "saveToSharedPref: token read from shared pref is " + readToken);
     }
 }

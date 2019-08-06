@@ -22,7 +22,7 @@ public interface UserAPI {
     @Headers({"Accept: application/json"})
     @POST("api/users/login")
     Call<User> loginUser(@Body Login login);
-
-    @GET("token")
-    Call<ResponseBody>getToken(@Header("Authorization") String authToken);
+//
+//    @GET("token")
+//    Call<ResponseBody>getToken(@Header("Authorization") String authToken);
 }
