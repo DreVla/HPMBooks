@@ -1,7 +1,10 @@
 package com.hpmtutorial.hpmbooksapp.view;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -30,11 +33,13 @@ public class LoginActivity extends AppCompatActivity {
         passwordEdittext = findViewById(R.id.login_password_edittext);
 
         // Creaza observer pentru a putea sa schimbe ui-ul
-        final Observer<Integer> uiChangeListener = new Observer<Integer>() {
+        final Observer<String> uiChangeListener = new Observer<String>() {
             @Override
-            public void onChanged(@Nullable final Integer newName) {
+            public void onChanged(@Nullable final String newToken) {
                 // Update the UI
-                Toast.makeText(LoginActivity.this, "Success!", Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(LoginActivity.this, "Success!" + " New token is: " + newToken, Toast.LENGTH_SHORT).show();
+                saveToSharedPref(newToken);
                 Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
                 startActivity(intent);
             }
@@ -51,5 +56,15 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             loginActivityViewModel.sendPost(email, password);
         }
+    }
+
+    public void saveToSharedPref(String token){
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(R.string.auth_token), token);
+        editor.apply();
+
+        String readToken = sharedPref.getString(getString(R.string.auth_token), null);
+        Log.d("SharedPref Token", "saveToSharedPref: token read from shared pref is " + readToken);
     }
 }

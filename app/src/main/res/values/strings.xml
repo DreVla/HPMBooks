@@ -8,4 +8,5 @@
     <string name="register_password">Password</string>
     <string name="register_passwordcheck">Check Password</string>
     <string name="register_button_register">Register</string>
+    <string name="auth_token">authToken</string>
 </resources>
