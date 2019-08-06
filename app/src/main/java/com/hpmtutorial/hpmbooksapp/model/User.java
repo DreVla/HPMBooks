@@ -14,6 +14,9 @@ public class User {
     @SerializedName("password")
     @Expose
     private String password;
+    @SerializedName("token")
+    @Expose
+    private String token;
 
     /**
      * No args constructor for use in serialization
@@ -55,6 +58,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     @Override
