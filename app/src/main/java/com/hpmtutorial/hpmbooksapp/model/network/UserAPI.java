@@ -16,7 +16,7 @@ import retrofit2.http.POST;
 public interface UserAPI {
 
     @Headers({"Accept: application/json"})
-    @POST("/api/users/register")
+    @POST("api/users/register")
     Call<ResponseBody> registerUser(@Body User user);
 
     @Headers({"Accept: application/json"})

@@ -1,40 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".view.LoginActivity"
-    android:orientation="vertical"
-    android:gravity="center">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <EditText
-        android:id="@+id/login_email_edittext"
+    <data>
+        <variable
+            name="loginViewModel"
+            type="com.hpmtutorial.hpmbooksapp.viewmodel.LoginActivityViewModel" />
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/register_email"
-        android:layout_margin="16dp"/>
+        android:layout_height="match_parent"
+        tools:context=".view.LoginActivity"
+        android:orientation="vertical"
+        android:gravity="center">
 
-    <EditText
-        android:id="@+id/login_password_edittext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/register_password"
-        android:layout_margin="16dp"
-        android:inputType="textPassword"/>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/login_email_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:passwordToggleEnabled="true"
+            android:layout_margin="16dp">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/button_shape"
-        android:text="@string/welcome_view_login_string"
-        android:layout_margin="16dp"
-        android:onClick="userLogin"
-        android:textColor="@android:color/white"
-        android:shadowColor="#000000"
-        android:shadowDx="0"
-        android:shadowDy="0"
-        android:shadowRadius="5"
-        android:elevation="12dp"/>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/login_email_edittext"
+                android:text="@={loginViewModel.email}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/register_email"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-</LinearLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/login_password_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:passwordToggleEnabled="true"
+            android:layout_margin="16dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/login_password_edittext"
+                android:text="@={loginViewModel.password}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/register_password"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_shape"
+            android:text="@string/welcome_view_login_string"
+            android:layout_margin="16dp"
+            android:onClick="userLogin"
+            android:textColor="@android:color/white"
+            android:shadowColor="#000000"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="5"
+            android:elevation="12dp" />
+
+    </LinearLayout>
+</layout>

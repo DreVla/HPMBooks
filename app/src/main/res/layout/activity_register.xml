@@ -1,55 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".view.RegisterActivity"
-    android:gravity="center"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <EditText
-        android:id="@+id/register_username_edittext"
+    <data>
+        <variable
+            name="registerViewModel"
+            type="com.hpmtutorial.hpmbooksapp.viewmodel.RegisterActivityViewModel" />
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/register_username"
-        android:layout_margin="16dp"/>
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        tools:context=".view.RegisterActivity">
 
-    <EditText
-        android:id="@+id/register_email_edittext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/register_email"
-        android:layout_margin="16dp"/>
+        <TextView
+            android:id="@+id/error_message_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@android:color/holo_red_dark"
+            tools:text="Error Message" />
 
-    <EditText
-        android:id="@+id/register_pass_edittext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/register_password"
-        android:inputType="textPassword"
-        android:layout_margin="16dp"/>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/register_username_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="24dp"
+            app:passwordToggleEnabled="true">
 
-    <EditText
-        android:id="@+id/register_passcheck_edittext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/register_passwordcheck"
-        android:inputType="textPassword"
-        android:layout_margin="16dp"/>
+            <EditText
+                android:id="@+id/register_username_edittext"
+                android:text="@={registerViewModel.username}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/register_username"
+                android:inputType="text" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="@string/register_button_register"
-        android:onClick="registerNewUser"
-        android:background="@drawable/button_shape"
-        android:textColor="@android:color/white"
-        android:shadowColor="#000000"
-        android:shadowDx="0"
-        android:shadowDy="0"
-        android:shadowRadius="5"
-        android:elevation="12dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-</LinearLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/register_email_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="24dp"
+            app:passwordToggleEnabled="true">
+
+            <EditText
+                android:id="@+id/register_email_edittext"
+                android:text="@={registerViewModel.email}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/register_email"
+                android:inputType="textEmailAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/register_pass_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="24dp"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/register_pass_edittext"
+                android:text="@={registerViewModel.password}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/register_password"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/register_passcheck_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="24dp"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/register_passcheck_edittext"
+                android:text="@={registerViewModel.passwordCheck}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/register_password"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@drawable/button_shape"
+            android:elevation="12dp"
+            android:onClick="registerNewUser"
+            android:shadowColor="#000000"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="5"
+            android:text="@string/register_button_register"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+</layout>

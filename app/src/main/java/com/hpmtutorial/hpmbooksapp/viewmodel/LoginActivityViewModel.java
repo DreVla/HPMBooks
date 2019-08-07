@@ -12,6 +12,8 @@ import com.hpmtutorial.hpmbooksapp.model.User;
 import com.hpmtutorial.hpmbooksapp.model.network.RetrofitClient;
 import com.hpmtutorial.hpmbooksapp.model.network.UserAPI;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.prefs.Preferences;
 
@@ -22,8 +24,8 @@ import retrofit2.Response;
 
 public class LoginActivityViewModel extends ViewModel {
 
-    private UserAPI userAPI;
     private MutableLiveData<String> uiLiveData;
+    public String email, password;
     private String token;
 
     public MutableLiveData<String> getCurrentUi(){
@@ -34,7 +36,7 @@ public class LoginActivityViewModel extends ViewModel {
     }
 
     public void sendPost(String email, String password) {
-        userAPI = RetrofitClient.getRetrofitInstance().create(UserAPI.class);
+        UserAPI userAPI = RetrofitClient.getRetrofitInstance().create(UserAPI.class);
         Login login = new Login(email, password);
         userAPI.loginUser(login).enqueue(new Callback<User>() {
             @Override
@@ -46,6 +48,13 @@ public class LoginActivityViewModel extends ViewModel {
                         Log.d("Login Token", "onResponse: token is " + token);
                     }
                     getCurrentUi().setValue(token);
+                } else {
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        Log.d("LoginErrorMessage", "onResponse: " + jObjError.getJSONObject("error").getString("message"));
+                    } catch (Exception e) {
+                        Log.d("LoginErrorMessage", "onResponse: " + e.getMessage());
+                    }
                 }
             }
 
@@ -59,4 +68,6 @@ public class LoginActivityViewModel extends ViewModel {
     public String showResponse(String response) {
         return response;
     }
+
+
 }

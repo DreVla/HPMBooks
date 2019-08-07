@@ -5,31 +5,39 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.hpmtutorial.hpmbooksapp.R;
+import com.hpmtutorial.hpmbooksapp.databinding.ActivityLoginBinding;
 import com.hpmtutorial.hpmbooksapp.viewmodel.LoginActivityViewModel;
 
 public class LoginActivity extends AppCompatActivity {
 
     private LoginActivityViewModel loginActivityViewModel;
-    private EditText emailEdittext, passwordEdittext;
+    private TextInputLayout emailLayout, passwordLayout;
     private String email, password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        ActivityLoginBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
         loginActivityViewModel = ViewModelProviders.of(this).get(LoginActivityViewModel.class);
-        emailEdittext = findViewById(R.id.login_email_edittext);
-        passwordEdittext = findViewById(R.id.login_password_edittext);
+
+        binding.setLifecycleOwner(this);
+        binding.setLoginViewModel(loginActivityViewModel);
+
+        emailLayout = findViewById(R.id.login_email_layout);
+        passwordLayout = findViewById(R.id.login_password_layout);
 
         // Creaza observer pentru a putea sa schimbe ui-ul
         final Observer<String> uiChangeListener = new Observer<String>() {
@@ -48,12 +56,19 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void userLogin(View view) {
-        email = emailEdittext.getText().toString();
-        password = passwordEdittext.getText().toString();
-        if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please fill all fields!", Toast.LENGTH_SHORT).show();
+        emailLayout.setError(null);
+        passwordLayout.setError(null);
+        email = loginActivityViewModel.email;
+        password = loginActivityViewModel.password;
+        if (email == null || password == null) {
+            passwordLayout.setError("Fill both fields!");
+            emailLayout.setError("Fill both fields!");
         } else {
-            loginActivityViewModel.sendPost(email, password);
+            if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                emailLayout.setError("Please input valid email!");
+            } else {
+                loginActivityViewModel.sendPost(email, password);
+            }
         }
     }
 
