@@ -2,9 +2,6 @@ package com.hpmtutorial.hpmbooksapp.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Patterns;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,9 +14,8 @@ import androidx.lifecycle.ViewModelProviders;
 import com.google.android.material.textfield.TextInputLayout;
 import com.hpmtutorial.hpmbooksapp.R;
 import com.hpmtutorial.hpmbooksapp.databinding.ActivityRegisterBinding;
+import com.hpmtutorial.hpmbooksapp.view.adapter.DataBindingAdapters;
 import com.hpmtutorial.hpmbooksapp.viewmodel.RegisterActivityViewModel;
-
-import org.w3c.dom.Text;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -44,7 +40,91 @@ public class RegisterActivity extends AppCompatActivity {
         passwordCheckLayout = findViewById(R.id.register_passcheck_layout);
         errorMessage = findViewById(R.id.error_message_textview);
 
-        // Creaza observer pentru a putea sa schimbe ui-ul
+        registerUIObserver();
+        registerErrorObserver();
+//
+//
+//
+//        final Observer<String> usernameErrorListener = new Observer<String>() {
+//            @Override
+//            public void onChanged(@Nullable final String errorMessage) {
+//                DataBindingAdapters.setErrorMessage(usernameLayout, errorMessage);
+//            }
+//        };
+//        registerActivityViewModel.usernameError.observe(this, usernameErrorListener);
+//
+//        final Observer<String> emailErrorListener = new Observer<String>() {
+//            @Override
+//            public void onChanged(@Nullable final String errorMessage) {
+//                DataBindingAdapters.setErrorMessage(emailLayout, errorMessage);
+//            }
+//        };
+//        registerActivityViewModel.emailError.observe(this, emailErrorListener);
+//
+//        final Observer<String> passwordErrorListener = new Observer<String>() {
+//            @Override
+//            public void onChanged(@Nullable final String errorMessage) {
+//                DataBindingAdapters.setErrorMessage(passwordLayout, errorMessage);
+//            }
+//        };
+//        registerActivityViewModel.passwordError.observe(this, passwordErrorListener);
+//
+//        final Observer<String> passwordCheckErrorListener = new Observer<String>() {
+//            @Override
+//            public void onChanged(@Nullable final String errorMessage) {
+//
+//                DataBindingAdapters.setErrorMessage(passwordCheckLayout, errorMessage);
+//            }
+//        };
+//        registerActivityViewModel.passwordError.observe(this, passwordCheckErrorListener);
+
+
+    }
+
+    public void registerErrorObserver() {
+        final Observer<RegisterActivityViewModel.ErrorStatus> errorListener = new Observer<RegisterActivityViewModel.ErrorStatus>() {
+            @Override
+            public void onChanged(@Nullable final RegisterActivityViewModel.ErrorStatus error) {
+                DataBindingAdapters.setErrorMessage(usernameLayout, null);
+                DataBindingAdapters.setErrorMessage(emailLayout, null);
+                DataBindingAdapters.setErrorMessage(passwordLayout,null);
+                DataBindingAdapters.setErrorMessage(passwordCheckLayout, null);
+                switch(error)
+                {
+                    case FILL_ALL:
+                        DataBindingAdapters.setErrorMessage(usernameLayout, getResources().getString(R.string.fill_fields));
+                        DataBindingAdapters.setErrorMessage(emailLayout, getResources().getString(R.string.fill_fields));
+                        DataBindingAdapters.setErrorMessage(passwordLayout, getResources().getString(R.string.fill_fields));
+                        DataBindingAdapters.setErrorMessage(passwordCheckLayout, getResources().getString(R.string.fill_fields));
+                        break;
+                    case FILL_USER:
+                        DataBindingAdapters.setErrorMessage(usernameLayout, getResources().getString(R.string.fill_fields));
+                        break;
+                    case FILL_EMAIL:
+                        DataBindingAdapters.setErrorMessage(emailLayout, getResources().getString(R.string.fill_fields));
+                        break;
+                    case FILL_PASSWORD:
+                        DataBindingAdapters.setErrorMessage(passwordLayout, getResources().getString(R.string.fill_fields));
+                        break;
+                    case FILL_PASSWORDCHECK:
+                        DataBindingAdapters.setErrorMessage(passwordCheckLayout, getResources().getString(R.string.fill_fields));
+                        break;
+                    case INVALID_MAIL:
+                        DataBindingAdapters.setErrorMessage(emailLayout, getResources().getString(R.string.invalid_email));
+                        break;
+                    case PASSWORDS_NO_MATCH:
+                        DataBindingAdapters.setErrorMessage(passwordLayout, getResources().getString(R.string.passwords_no_match));
+                        DataBindingAdapters.setErrorMessage(passwordCheckLayout, getResources().getString(R.string.passwords_no_match));
+                        break;
+                    default:
+
+                }
+            }
+        };
+        registerActivityViewModel.errorMessage.observe(this, errorListener);
+    }
+
+    public void registerUIObserver(){
         final Observer<Integer> uiChangeListener = new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable final Integer newName) {
@@ -54,32 +134,6 @@ public class RegisterActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         };
-        // leaga observerul
-        registerActivityViewModel.getCurrentUi().observe(this, uiChangeListener);
-    }
-
-    public void registerNewUser(View view) {
-        usernameLayout.setError(null);
-        emailLayout.setError(null);
-        passwordLayout.setError(null);
-        passwordCheckLayout.setError(null);
-        username = registerActivityViewModel.username;
-        email = registerActivityViewModel.email;
-        password = registerActivityViewModel.password;
-        passwordCheck = registerActivityViewModel.passwordCheck;
-        if (username == null || email == null || password == null) {
-            errorMessage.setText(R.string.error_message);
-        } else {
-            errorMessage.setText(null);
-            if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-                emailLayout.setError("Please input valid email!");
-            } else if (password.equals(passwordCheck)) {
-                registerActivityViewModel.sendPost(username, email, password);
-            } else {
-                Toast.makeText(this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
-                passwordLayout.setError("Passwords do not match!");
-                passwordCheckLayout.setError("Passwords do not match!");
-            }
-        }
+        registerActivityViewModel.uiLiveData.observe(this, uiChangeListener);
     }
 }

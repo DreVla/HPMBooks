@@ -11,4 +11,7 @@
     <string name="auth_token">authToken</string>
     <string name="preference_file_key">auth_file</string>
     <string name="error_message">Please fill all fields!</string>
+    <string name="fill_fields">Please fill this field!</string>
+    <string name="invalid_email">Invalid email!</string>
+    <string name="passwords_no_match">Passwords don\'t match</string>
 </resources>
