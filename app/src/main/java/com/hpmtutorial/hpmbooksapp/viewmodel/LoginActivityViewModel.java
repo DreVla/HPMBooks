@@ -3,10 +3,14 @@ package com.hpmtutorial.hpmbooksapp.viewmodel;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.util.Patterns;
 
+import androidx.databinding.BindingAdapter;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.hpmtutorial.hpmbooksapp.model.Login;
 import com.hpmtutorial.hpmbooksapp.model.User;
 import com.hpmtutorial.hpmbooksapp.model.network.RetrofitClient;
@@ -24,16 +28,14 @@ import retrofit2.Response;
 
 public class LoginActivityViewModel extends ViewModel {
 
-    private MutableLiveData<String> uiLiveData;
-    public String email, password;
+    public MutableLiveData<String> uiLiveData = new MutableLiveData<>();
+    public MutableLiveData<String>
+            email = new MutableLiveData<>(),
+            password = new MutableLiveData<>(),
+            emailError = new MutableLiveData<>(),
+            passwordError = new MutableLiveData<>();
     private String token;
 
-    public MutableLiveData<String> getCurrentUi(){
-        if(uiLiveData == null){
-            uiLiveData = new MutableLiveData<>();
-        }
-        return uiLiveData;
-    }
 
     public void sendPost(String email, String password) {
         UserAPI userAPI = RetrofitClient.getRetrofitInstance().create(UserAPI.class);
@@ -47,7 +49,7 @@ public class LoginActivityViewModel extends ViewModel {
                         //use your header value
                         Log.d("Login Token", "onResponse: token is " + token);
                     }
-                    getCurrentUi().setValue(token);
+                    uiLiveData.setValue(token);
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -69,5 +71,19 @@ public class LoginActivityViewModel extends ViewModel {
         return response;
     }
 
+    public void onLoginClick(){
+        emailError.setValue(null);
+        passwordError.setValue(null);
+        if (email.getValue() == null || password.getValue() == null) {
+            passwordError.setValue("Fill both fields!");
+            emailError.setValue("Fill both fields!");
+        } else {
+            if(!Patterns.EMAIL_ADDRESS.matcher(email.getValue()).matches()) {
+                emailError.setValue("Please input valid email!");
+            } else {
+                sendPost(email.getValue(), password.getValue());
+            }
+        }
+    }
 
 }

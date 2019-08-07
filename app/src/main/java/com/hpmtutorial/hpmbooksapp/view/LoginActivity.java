@@ -19,18 +19,20 @@ import androidx.lifecycle.ViewModelProviders;
 import com.google.android.material.textfield.TextInputLayout;
 import com.hpmtutorial.hpmbooksapp.R;
 import com.hpmtutorial.hpmbooksapp.databinding.ActivityLoginBinding;
+import com.hpmtutorial.hpmbooksapp.view.adapter.DataBindingAdapters;
 import com.hpmtutorial.hpmbooksapp.viewmodel.LoginActivityViewModel;
 
 public class LoginActivity extends AppCompatActivity {
 
     private LoginActivityViewModel loginActivityViewModel;
     private TextInputLayout emailLayout, passwordLayout;
+    private ActivityLoginBinding binding;
     private String email, password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityLoginBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
         loginActivityViewModel = ViewModelProviders.of(this).get(LoginActivityViewModel.class);
 
         binding.setLifecycleOwner(this);
@@ -44,7 +46,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable final String newToken) {
                 // Update the UI
-
                 Toast.makeText(LoginActivity.this, "Success!" + " New token is: " + newToken, Toast.LENGTH_SHORT).show();
                 saveToSharedPref(newToken);
                 Intent intent = new Intent(getApplicationContext(), BooksActivity.class);
@@ -52,24 +53,26 @@ public class LoginActivity extends AppCompatActivity {
             }
         };
         // leaga observerul
-        loginActivityViewModel.getCurrentUi().observe(this, uiChangeListener);
-    }
+        loginActivityViewModel.uiLiveData.observe(this, uiChangeListener);
 
-    public void userLogin(View view) {
-        emailLayout.setError(null);
-        passwordLayout.setError(null);
-        email = loginActivityViewModel.email;
-        password = loginActivityViewModel.password;
-        if (email == null || password == null) {
-            passwordLayout.setError("Fill both fields!");
-            emailLayout.setError("Fill both fields!");
-        } else {
-            if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                emailLayout.setError("Please input valid email!");
-            } else {
-                loginActivityViewModel.sendPost(email, password);
+        final Observer<String> emailErrorListener = new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable final String errorMessage) {
+                DataBindingAdapters.setErrorMessage(emailLayout, errorMessage);
             }
-        }
+        };
+        // leaga observerul
+        loginActivityViewModel.emailError.observe(this, emailErrorListener);
+
+        final Observer<String> passErrorListener = new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable final String errorMessage) {
+                DataBindingAdapters.setErrorMessage(passwordLayout, errorMessage);
+            }
+        };
+        // leaga observerul
+        loginActivityViewModel.passwordError.observe(this, passErrorListener);
+
     }
 
     public void saveToSharedPref(String token){

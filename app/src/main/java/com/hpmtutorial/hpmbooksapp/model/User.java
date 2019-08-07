@@ -1,5 +1,7 @@
 package com.hpmtutorial.hpmbooksapp.model;
 
+import android.util.Patterns;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -36,6 +38,11 @@ public class User {
         this.password = password;
     }
 
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -50,6 +57,10 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public boolean isEmailValid() {
+        return Patterns.EMAIL_ADDRESS.matcher(getEmail()).matches();
     }
 
     public String getPassword() {
