@@ -24,26 +24,20 @@ import retrofit2.Response;
 
 public class BooksActivityViewModel extends ViewModel {
 
-    private BookAPI bookAPI;
-    private List<Book> receivedBooks;
-    private MutableLiveData<List<Book>> mutableLiveDataBooks;
-
-    public MutableLiveData<List<Book>> getBookList(){
-        if(mutableLiveDataBooks == null){
-            mutableLiveDataBooks = new MutableLiveData<>();
-        }
-        return mutableLiveDataBooks;
+    public enum uiChange{
+        ADD_BOOK
     }
+
+    private BookAPI bookAPI;
+    public MutableLiveData<List<Book>> mutableLiveDataBooks = new MutableLiveData<>();
+    public MutableLiveData<uiChange> uiChangeMutableLiveData = new MutableLiveData<>();
 
     public void sendGet(String token){
         bookAPI = RetrofitClient.getRetrofitBooks(token).create(BookAPI.class);
         bookAPI.getAllBooks(token).enqueue(new Callback<List<Book>>() {
             @Override
             public void onResponse(Call<List<Book>> call, Response<List<Book>> response) {
-                receivedBooks = new ArrayList<>();
-//                Log.d("FirstBook", "onResponse: " + response.body().get(0).toString());
                 mutableLiveDataBooks.setValue(response.body());
-//                Log.d("FirstBook", "onResponse: " + mutableLiveDataBooks.getValue().get(0).toString());
             }
 
             @Override
@@ -51,5 +45,10 @@ public class BooksActivityViewModel extends ViewModel {
                 Log.d("Fail", "onFailure: Something wrong");
             }
         });
+    }
+
+    public void onAddClick(){
+        uiChangeMutableLiveData.setValue(uiChange.ADD_BOOK);
+        Log.d("VM button", "onAddClick: pressed button");
     }
 }

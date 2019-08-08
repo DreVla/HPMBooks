@@ -10,4 +10,13 @@
     <string name="register_button_register">Register</string>
     <string name="auth_token">authToken</string>
     <string name="preference_file_key">auth_file</string>
+    <string name="error_message">Something went wrong</string>
+    <string name="fill_fields">Please fill this field!</string>
+    <string name="invalid_email">Invalid email!</string>
+    <string name="passwords_no_match">Passwords don\'t match</string>
+    <string name="retry">Retry</string>
+    <string name="add_book_title">Title</string>
+    <string name="add_book_author">Author</string>
+    <string name="add_book_publisher">Publisher</string>
+    <string name="add_book_button">Add Book</string>
 </resources>
