@@ -1,21 +1,27 @@
 package com.hpmtutorial.hpmbooksapp.view;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
 import com.hpmtutorial.hpmbooksapp.R;
+import com.hpmtutorial.hpmbooksapp.databinding.ActivityBooksBinding;
+import com.hpmtutorial.hpmbooksapp.databinding.ActivityRegisterBinding;
 import com.hpmtutorial.hpmbooksapp.model.Book;
 import com.hpmtutorial.hpmbooksapp.viewmodel.BooksActivityViewModel;
 import com.hpmtutorial.hpmbooksapp.view.adapter.BooksRecyclerViewAdapter;
+import com.hpmtutorial.hpmbooksapp.viewmodel.RegisterActivityViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +39,12 @@ public class BooksActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_books);
+
+        ActivityBooksBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_books);
+        booksActivityViewModel = ViewModelProviders.of(this).get(BooksActivityViewModel.class);
+
+        binding.setLifecycleOwner(this);
+        binding.setBooksViewModel(booksActivityViewModel);
 
         recyclerViewBooks = findViewById(R.id.books_recyclerview);
         recyclerViewBooks.setHasFixedSize(true);
@@ -48,12 +59,44 @@ public class BooksActivity extends AppCompatActivity {
         rvAdapter = new BooksRecyclerViewAdapter(bookList);
         recyclerViewBooks.setAdapter(rvAdapter);
 
-        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
-        booksActivityViewModel.getBookList().observe(this, new Observer<List<Book>>() {
+        observeBooks();
+        observeUIChange();
+    }
+
+    private void observeUIChange() {
+        booksActivityViewModel.uiChangeMutableLiveData.observe(this, new Observer<BooksActivityViewModel.uiChange>() {
+            @Override
+            public void onChanged(BooksActivityViewModel.uiChange uiChange) {
+                switch (uiChange){
+                    case ADD_BOOK:
+                        Log.d("AddBook", "onChanged: creates Intent");
+                        Intent intent = new Intent(getApplicationContext(), AddBookActivity.class);
+                        startActivityForResult(intent, 1);
+                        break;
+                    default:
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("AddBook", "onActivityResult: enters activity result");
+        loadBooks();
+    }
+
+    private void observeBooks() {
+        booksActivityViewModel.mutableLiveDataBooks.observe(this, new Observer<List<Book>>() {
             @Override
             public void onChanged(List<Book> books) {
-                bookList.addAll(books);
-                rvAdapter.notifyDataSetChanged();
+                if(bookList.isEmpty()){
+                    bookList.addAll(books);
+                    rvAdapter.notifyDataSetChanged();
+                } else {
+                    bookList.add(books.get(books.size()-1));
+                    rvAdapter.notifyDataSetChanged();
+                }
             }
         });
     }
