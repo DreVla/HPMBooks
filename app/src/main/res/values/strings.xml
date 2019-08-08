@@ -19,4 +19,5 @@
     <string name="add_book_author">Author</string>
     <string name="add_book_publisher">Publisher</string>
     <string name="add_book_button">Add Book</string>
+    <string name="ok">Ok</string>
 </resources>

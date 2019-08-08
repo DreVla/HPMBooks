@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 
 import com.hpmtutorial.hpmbooksapp.R;
@@ -30,7 +31,7 @@ public class BooksActivity extends AppCompatActivity {
 
     private RecyclerView recyclerViewBooks;
     private List<Book> bookList;
-    private RecyclerView.Adapter rvAdapter;
+    private BooksRecyclerViewAdapter rvAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private String token;
 
@@ -84,7 +85,6 @@ public class BooksActivity extends AppCompatActivity {
             public void onChanged(BooksActivityViewModel.uiChange uiChange) {
                 switch (uiChange){
                     case ADD_BOOK:
-                        Log.d("AddBook", "onChanged: creates Intent");
                         Intent intent = new Intent(getApplicationContext(), AddBookActivity.class);
                         startActivityForResult(intent, 1);
                         break;
@@ -99,7 +99,6 @@ public class BooksActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("AddBook", "onActivityResult: enters activity result");
         loadBooks();
     }
 
@@ -113,6 +112,10 @@ public class BooksActivity extends AppCompatActivity {
                 } else if(bookList.size() == books.size()-1){
                     bookList.add(books.get(books.size()-1));
                     rvAdapter.notifyDataSetChanged();
+                } else {
+                    bookList.clear();
+                    bookList.addAll(books);
+                    rvAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -124,5 +127,11 @@ public class BooksActivity extends AppCompatActivity {
         if(token != null){
             booksActivityViewModel.sendGet(token);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadBooks();
     }
 }

@@ -17,9 +17,12 @@ import java.util.List;
 public class BooksRecyclerViewAdapter extends RecyclerView.Adapter<BooksRecyclerViewAdapter.MyViewHolder> {
 
     private List<Book> books;
+    private OnItemClickListener listener;
 
-    public BooksRecyclerViewAdapter(List<Book> books) {
+
+    public BooksRecyclerViewAdapter(List<Book> books, OnItemClickListener listener) {
         this.books = books;
+        this.listener = listener;
     }
 
     @NonNull
@@ -33,7 +36,9 @@ public class BooksRecyclerViewAdapter extends RecyclerView.Adapter<BooksRecycler
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.title.setText(books.get(position).getTitle());
         holder.author.setText(books.get(position).getAuthor());
+        holder.bind(books.get(position), listener);
     }
+
 
     @Override
     public int getItemCount() {
