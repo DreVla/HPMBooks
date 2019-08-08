@@ -16,14 +16,6 @@
         android:orientation="vertical"
         tools:context=".view.RegisterActivity">
 
-        <TextView
-            android:id="@+id/error_message_textview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@android:color/holo_red_dark"
-            tools:text="Error Message" />
-
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/register_username_layout"
             android:layout_width="match_parent"

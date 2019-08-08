@@ -1,11 +1,16 @@
 package com.hpmtutorial.hpmbooksapp.view;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
@@ -21,13 +26,10 @@ public class RegisterActivity extends AppCompatActivity {
 
     private RegisterActivityViewModel registerActivityViewModel;
     private TextInputLayout usernameLayout, emailLayout, passwordLayout, passwordCheckLayout;
-    private TextView errorMessage;
-    private String username, email, password, passwordCheck;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_register);
         ActivityRegisterBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_register);
         registerActivityViewModel = ViewModelProviders.of(this).get(RegisterActivityViewModel.class);
 
@@ -38,47 +40,10 @@ public class RegisterActivity extends AppCompatActivity {
         emailLayout = findViewById(R.id.register_email_layout);
         passwordLayout = findViewById(R.id.register_pass_layout);
         passwordCheckLayout = findViewById(R.id.register_passcheck_layout);
-        errorMessage = findViewById(R.id.error_message_textview);
 
         registerUIObserver();
         registerErrorObserver();
-//
-//
-//
-//        final Observer<String> usernameErrorListener = new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable final String errorMessage) {
-//                DataBindingAdapters.setErrorMessage(usernameLayout, errorMessage);
-//            }
-//        };
-//        registerActivityViewModel.usernameError.observe(this, usernameErrorListener);
-//
-//        final Observer<String> emailErrorListener = new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable final String errorMessage) {
-//                DataBindingAdapters.setErrorMessage(emailLayout, errorMessage);
-//            }
-//        };
-//        registerActivityViewModel.emailError.observe(this, emailErrorListener);
-//
-//        final Observer<String> passwordErrorListener = new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable final String errorMessage) {
-//                DataBindingAdapters.setErrorMessage(passwordLayout, errorMessage);
-//            }
-//        };
-//        registerActivityViewModel.passwordError.observe(this, passwordErrorListener);
-//
-//        final Observer<String> passwordCheckErrorListener = new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable final String errorMessage) {
-//
-//                DataBindingAdapters.setErrorMessage(passwordCheckLayout, errorMessage);
-//            }
-//        };
-//        registerActivityViewModel.passwordError.observe(this, passwordCheckErrorListener);
-
-
+        registerServerErrorObserver(this);
     }
 
     public void registerErrorObserver() {
@@ -125,15 +90,36 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void registerUIObserver(){
-        final Observer<Integer> uiChangeListener = new Observer<Integer>() {
+        final Observer<String> uiChangeListener = new Observer<String>() {
             @Override
-            public void onChanged(@Nullable final Integer newName) {
+            public void onChanged(@Nullable final String status) {
                 // Update UI
-                Toast.makeText(RegisterActivity.this, "Success! Please login!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this, status, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
             }
         };
         registerActivityViewModel.uiLiveData.observe(this, uiChangeListener);
+    }
+
+    public void registerServerErrorObserver(final Context context){
+        final Observer<String> serverErrorListener = new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable final String errorMessage) {
+                // Update UI
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage(errorMessage)
+                        .setTitle(R.string.error_message)
+                        .setPositiveButton(R.string.retry, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                            }
+                        });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                Log.d("Server error", "onChanged: " + errorMessage);
+            }
+        };
+        registerActivityViewModel.serverError.observe(this, serverErrorListener);
     }
 }

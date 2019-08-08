@@ -11,9 +11,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.Gson;
 import com.hpmtutorial.hpmbooksapp.model.Login;
 import com.hpmtutorial.hpmbooksapp.model.User;
 import com.hpmtutorial.hpmbooksapp.model.network.RetrofitClient;
+import com.hpmtutorial.hpmbooksapp.model.network.ServerError;
 import com.hpmtutorial.hpmbooksapp.model.network.UserAPI;
 
 import org.json.JSONObject;
@@ -34,6 +36,7 @@ public class LoginActivityViewModel extends ViewModel {
             password = new MutableLiveData<>(),
             emailError = new MutableLiveData<>(),
             passwordError = new MutableLiveData<>();
+    public MutableLiveData<String> serverError = new MutableLiveData<>();
     private String token;
 
 
@@ -52,8 +55,9 @@ public class LoginActivityViewModel extends ViewModel {
                     uiLiveData.setValue(token);
                 } else {
                     try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        Log.d("LoginErrorMessage", "onResponse: " + jObjError.getJSONObject("error").getString("message"));
+                        Gson gson = new Gson();
+                        ServerError error=gson.fromJson(response.errorBody().charStream(),ServerError.class);
+                        serverError.setValue(error.getError());
                     } catch (Exception e) {
                         Log.d("LoginErrorMessage", "onResponse: " + e.getMessage());
                     }
@@ -67,9 +71,6 @@ public class LoginActivityViewModel extends ViewModel {
         });
     }
 
-    public String showResponse(String response) {
-        return response;
-    }
 
     public void onLoginClick(){
         emailError.setValue(null);
