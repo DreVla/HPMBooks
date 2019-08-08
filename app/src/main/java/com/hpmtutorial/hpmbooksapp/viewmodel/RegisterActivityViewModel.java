@@ -1,45 +1,67 @@
 package com.hpmtutorial.hpmbooksapp.viewmodel;
 
-import android.content.Intent;
+import android.app.Application;
 import android.util.Log;
+import android.util.Patterns;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.hpmtutorial.hpmbooksapp.R;
 import com.hpmtutorial.hpmbooksapp.model.User;
-import com.hpmtutorial.hpmbooksapp.model.network.UserAPI;
 import com.hpmtutorial.hpmbooksapp.model.network.RetrofitClient;
-import com.hpmtutorial.hpmbooksapp.view.LoginActivity;
+import com.hpmtutorial.hpmbooksapp.model.network.ServerError;
+import com.hpmtutorial.hpmbooksapp.model.network.UserAPI;
+
+import org.json.JSONObject;
+
+import java.io.IOException;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RegisterActivityViewModel extends ViewModel {
+public class RegisterActivityViewModel extends AndroidViewModel {
 
     private UserAPI userAPI;
-    private MutableLiveData<Integer> uiLiveData;
+    public MutableLiveData<String> uiLiveData = new MutableLiveData<>();
+    public MutableLiveData<ErrorStatus> errorMessage = new MutableLiveData<>();
+    public MutableLiveData<String>
+            username = new MutableLiveData<>(),
+            email = new MutableLiveData<>(),
+            password = new MutableLiveData<>(),
+            passwordCheck = new MutableLiveData<>();
+    public MutableLiveData<String> serverError = new MutableLiveData<>();
     private int i = 1;
 
-    public MutableLiveData<Integer> getCurrentUi(){
-        if(uiLiveData == null){
-            uiLiveData = new MutableLiveData<>();
-        }
-        return uiLiveData;
+    public RegisterActivityViewModel(@NonNull Application application) {
+        super(application);
     }
 
-    public void sendPost(String username, String email, String password) {
+    public void sendPost(String username, final String email, String password) {
         userAPI = RetrofitClient.getRetrofitInstance().create(UserAPI.class);
-        User newUser = new User(username,email,password);
+        User newUser = new User(username, email, password);
         Log.d("Register User", "sendPost: " + newUser.toString());
         userAPI.registerUser(newUser).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     showResponse(response.body().toString());
-                    getCurrentUi().setValue(++i);
+                    uiLiveData.setValue("Succes");
                     Log.i("Register User", "User submitted to API. " + response.body().toString());
+                } else {
+                    try {
+                        Gson gson = new Gson();
+                        ServerError error=gson.fromJson(response.errorBody().charStream(),ServerError.class);
+                        serverError.setValue(error.getError());
+//                        onEmailError();
+                    } catch (Exception e) {
+                        Log.d("RegisterException", "onResponse: " + e.getMessage());
+                    }
                 }
             }
 
@@ -53,5 +75,43 @@ public class RegisterActivityViewModel extends ViewModel {
     public String showResponse(String response) {
         Log.d("Register User", "showResponse: " + response);
         return response;
+    }
+
+    public enum ErrorStatus{
+        FILL_ALL,
+        FILL_USER,
+        FILL_EMAIL,
+        FILL_PASSWORD,
+        FILL_PASSWORDCHECK,
+        INVALID_MAIL,
+        PASSWORDS_NO_MATCH,
+        SUCCES
+    }
+
+    public void onEmailError(){
+        email.setValue("");
+    }
+
+    public void onRegisterClick() {
+        if (username.getValue() == null && email.getValue() == null && password.getValue() == null && passwordCheck.getValue() == null) {
+            errorMessage.setValue(ErrorStatus.FILL_ALL);
+        } else if (username.getValue() == null) {
+            errorMessage.setValue(ErrorStatus.FILL_USER);
+        } else if (email.getValue() == null) {
+            errorMessage.setValue(ErrorStatus.FILL_EMAIL);
+        } else if (password.getValue() == null) {
+            errorMessage.setValue(ErrorStatus.FILL_PASSWORD);
+        }else if(passwordCheck.getValue() == null){
+            errorMessage.setValue(ErrorStatus.FILL_PASSWORDCHECK);
+        } else {
+            if (!Patterns.EMAIL_ADDRESS.matcher(email.getValue()).matches()) {
+                errorMessage.setValue(ErrorStatus.INVALID_MAIL);
+            } else if (password.getValue().equals(passwordCheck.getValue())) {
+                sendPost(username.getValue(), email.getValue(), password.getValue());
+                errorMessage.setValue(ErrorStatus.SUCCES);
+            } else {
+                errorMessage.setValue(ErrorStatus.PASSWORDS_NO_MATCH);
+            }
+        }
     }
 }
