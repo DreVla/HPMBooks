@@ -9,6 +9,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
@@ -23,4 +24,14 @@ public interface BookAPI {
     @Headers({"Accept: application/json"})
     @POST("api/books/")
     Call<ResponseBody> addNewBook(@Header("Authorization") String authHeader, @Body Book book);
+
+    @GET("api/books/{book_id}")
+    Call<Book> findById(@Header("Authorization") String authHeader, @Path("book_id")String bookId);
+
+    @Headers({"Accept: application/json"})
+    @PUT("api/books/{book_id}")
+    Call<ResponseBody> updateBook(@Header("Authorization") String authHeader, @Path("book_id")String bookId, @Body Book book);
+
+    @DELETE("api/books/{book_id}")
+    Call<ResponseBody> deleteBook(@Header("Authorization") String authHeader, @Path("book_id")String bookId);
 }

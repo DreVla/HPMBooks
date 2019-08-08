@@ -32,6 +32,7 @@ public class BooksActivity extends AppCompatActivity {
     private List<Book> bookList;
     private RecyclerView.Adapter rvAdapter;
     private RecyclerView.LayoutManager layoutManager;
+    private String token;
 
 //    Add viewmodel
     private BooksActivityViewModel booksActivityViewModel;
@@ -56,11 +57,25 @@ public class BooksActivity extends AppCompatActivity {
         loadBooks();
         layoutManager = new LinearLayoutManager(this);
         recyclerViewBooks.setLayoutManager(layoutManager);
-        rvAdapter = new BooksRecyclerViewAdapter(bookList);
+        rvAdapter = new BooksRecyclerViewAdapter(bookList, new BooksRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Book item) {
+                String id = item.getId();
+                Intent intent = new Intent(getApplicationContext(), DetailsActivity.class);
+                intent.putExtra("book_id", id);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onRemoveClick(View view, int adapterPosition) {
+                booksActivityViewModel.sendDelete(token, rvAdapter.getBookId(adapterPosition));
+            }
+        });
         recyclerViewBooks.setAdapter(rvAdapter);
 
         observeBooks();
         observeUIChange();
+
     }
 
     private void observeUIChange() {
@@ -73,6 +88,8 @@ public class BooksActivity extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), AddBookActivity.class);
                         startActivityForResult(intent, 1);
                         break;
+                    case DELETED_BOOK:
+                        loadBooks();
                     default:
                 }
             }
@@ -93,7 +110,7 @@ public class BooksActivity extends AppCompatActivity {
                 if(bookList.isEmpty()){
                     bookList.addAll(books);
                     rvAdapter.notifyDataSetChanged();
-                } else {
+                } else if(bookList.size() == books.size()-1){
                     bookList.add(books.get(books.size()-1));
                     rvAdapter.notifyDataSetChanged();
                 }
@@ -103,8 +120,7 @@ public class BooksActivity extends AppCompatActivity {
 
     public void loadBooks(){
         SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        String token = sharedPref.getString(getString(R.string.auth_token), null);
-        Log.d("ReadToken", "token is: " + token);
+        token = sharedPref.getString(getString(R.string.auth_token), null);
         if(token != null){
             booksActivityViewModel.sendGet(token);
         }

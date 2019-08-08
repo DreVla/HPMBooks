@@ -3,6 +3,7 @@ package com.hpmtutorial.hpmbooksapp.view.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -40,15 +41,35 @@ public class BooksRecyclerViewAdapter extends RecyclerView.Adapter<BooksRecycler
         else return books.size();
     }
 
+    public String getBookId(int position) {
+        return books.get(position).getId();
+    }
+
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         public TextView title;
         public TextView author;
+        public ImageView removeIcon;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             title=itemView.findViewById(R.id.books_recyclerview_title);
             author=itemView.findViewById(R.id.books_recyclerview_author);
+            removeIcon = itemView.findViewById(R.id.book_remove_button);
+
+            removeIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onRemoveClick(view, getAdapterPosition());
+                }
+            });
+        }
 
         }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(Book item);
+
+        void onRemoveClick(View view, int adapterPosition);
     }
 }
