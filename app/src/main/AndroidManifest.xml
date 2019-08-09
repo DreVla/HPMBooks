@@ -14,9 +14,8 @@
         <activity android:name=".view.DetailsActivity"></activity>
         <activity android:name=".view.AddBookActivity" />
         <activity android:name=".view.BooksActivity" />
-        <activity android:name=".view.LoginActivity" />
         <activity android:name=".view.RegisterActivity" />
-        <activity android:name=".view.MainActivity">
+        <activity android:name=".view.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

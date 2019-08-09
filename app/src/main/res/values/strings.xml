@@ -20,4 +20,5 @@
     <string name="add_book_publisher">Publisher</string>
     <string name="add_book_button">Add Book</string>
     <string name="ok">Ok</string>
+    <string name="no_account">No account? Register Here!</string>
 </resources>

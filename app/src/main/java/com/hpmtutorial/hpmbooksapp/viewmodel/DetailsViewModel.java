@@ -20,13 +20,19 @@ import retrofit2.Response;
 
 public class DetailsViewModel extends ViewModel {
 
+    public enum uiStatus{
+        LOADING,
+        DONE
+    }
     private BookAPI bookAPI;
+    public MutableLiveData<uiStatus> uiStatusMutableLiveData = new MutableLiveData<>();
     public MutableLiveData<String>
             title = new MutableLiveData<>(),
             author = new MutableLiveData<>(),
             publisher = new MutableLiveData<>();
 
     public void sendGet(String token, String bookId){
+        uiStatusMutableLiveData.setValue(uiStatus.LOADING);
         bookAPI = RetrofitClient.getRetrofitBooks(token).create(BookAPI.class);
         bookAPI.findById(token, bookId).enqueue(new Callback<Book>() {
             @Override
@@ -37,7 +43,9 @@ public class DetailsViewModel extends ViewModel {
                     title.setValue(book.getTitle());
                     author.setValue(book.getAuthor());
                     publisher.setValue(book.getPublisher());
+                    uiStatusMutableLiveData.setValue(uiStatus.DONE);
                 } else {
+                    uiStatusMutableLiveData.setValue(uiStatus.DONE);
                     try {
                         Log.d("GetBookError", "onResponse: " + response.errorBody().string());
                     } catch (IOException e) {
@@ -54,18 +62,21 @@ public class DetailsViewModel extends ViewModel {
     }
 
     public void sendPut(String token, String bookId){
+        uiStatusMutableLiveData.setValue(uiStatus.LOADING);
         bookAPI = RetrofitClient.getRetrofitBooks(token).create(BookAPI.class);
         Book updatedBook = new Book(title.getValue(), author.getValue(), publisher.getValue());
         bookAPI.updateBook(token, bookId, updatedBook).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if(response.isSuccessful()){
+                    uiStatusMutableLiveData.setValue(uiStatus.DONE);
                     try {
                         Log.d("UpdateBookSuccess", "onResponse: " + response.body().string());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 } else {
+                    uiStatusMutableLiveData.setValue(uiStatus.DONE);
                     try {
                         Log.d("UpdateBookError", "onResponse: " + response.errorBody().string());
                     } catch (IOException e) {

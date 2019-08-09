@@ -8,7 +8,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.ViewOverlay;
+import android.view.animation.AlphaAnimation;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -29,6 +32,9 @@ public class LoginActivity extends AppCompatActivity {
     private LoginActivityViewModel loginActivityViewModel;
     private TextInputLayout emailLayout, passwordLayout;
     private ActivityLoginBinding binding;
+    private FrameLayout loadingOverlay;
+    private AlphaAnimation inAnimation;
+    private AlphaAnimation outAnimation;
     private String email, password;
 
     @Override
@@ -42,7 +48,9 @@ public class LoginActivity extends AppCompatActivity {
 
         emailLayout = findViewById(R.id.login_email_layout);
         passwordLayout = findViewById(R.id.login_password_layout);
+        loadingOverlay = findViewById(R.id.login_overlay_view_loading);
 
+        setTokenListener();
         setUIListener();
         setUIErrorListener();
         setServerErrorListener(this);
@@ -70,19 +78,39 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setUIListener() {
-        final Observer<String> uiChangeListener = new Observer<String>() {
+        final Observer<LoginActivityViewModel.UIChange> uiChangeListener = new Observer<LoginActivityViewModel.UIChange>() {
             @Override
-            public void onChanged(@Nullable final String newToken) {
-                // Update the UI
-//                Toast.makeText(LoginActivity.this, "Success!" + " New token is: " + newToken, Toast.LENGTH_SHORT).show();
-                saveToSharedPref(newToken);
-                Intent intent = new Intent(getApplicationContext(), BooksActivity.class);
-                startActivity(intent);
+            public void onChanged(@Nullable final LoginActivityViewModel.UIChange msg) {
+                switch (msg){
+                    case LOAD:
+                        startAnimation();
+                        break;
+                    case CHANGE:
+                        Intent booksIntent = new Intent(getApplicationContext(), BooksActivity.class);
+                        endAnimation();
+                        startActivity(booksIntent);
+                        loginActivityViewModel.uiLiveData.setValue(LoginActivityViewModel.UIChange.NOACTION);
+                        break;
+                    case REGISTER:
+                        Intent registerIntent = new Intent(getApplicationContext(), RegisterActivity.class);
+                        startActivity(registerIntent);
+                    default:
+
+                }
             }
         };
         loginActivityViewModel.uiLiveData.observe(this, uiChangeListener);
     }
 
+    private void setTokenListener(){
+        final Observer<String> tokenObserver = new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable final String token) {
+                saveToSharedPref(token);
+            }
+        };
+        loginActivityViewModel.tokenReceived.observe(this, tokenObserver);
+    }
 
     public void setServerErrorListener(final Context context){
         final Observer<String> serverErrorListener = new Observer<String>() {
@@ -95,6 +123,7 @@ public class LoginActivity extends AppCompatActivity {
                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+                                endAnimation();
                             }
                         });
                 AlertDialog dialog = builder.create();
@@ -112,5 +141,19 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(getString(R.string.auth_token), token);
         editor.apply();
+    }
+
+    public void startAnimation(){
+        inAnimation = new AlphaAnimation(0f, 1f);
+        inAnimation.setDuration(200);
+        loadingOverlay.setAnimation(inAnimation);
+        loadingOverlay.setVisibility(View.VISIBLE);
+    }
+
+    public void endAnimation(){
+        outAnimation = new AlphaAnimation(1f, 0f);
+        outAnimation.setDuration(200);
+        loadingOverlay.setAnimation(outAnimation);
+        loadingOverlay.setVisibility(View.GONE);
     }
 }

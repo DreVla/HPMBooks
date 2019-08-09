@@ -27,8 +27,14 @@ import retrofit2.Response;
 
 public class RegisterActivityViewModel extends AndroidViewModel {
 
+    public enum UIChange{
+        SUCCES,
+        LOADING,
+        FAILED,
+        NOACTION
+    }
     private UserAPI userAPI;
-    public MutableLiveData<String> uiLiveData = new MutableLiveData<>();
+    public MutableLiveData<UIChange> uiLiveData = new MutableLiveData<>();
     public MutableLiveData<ErrorStatus> errorMessage = new MutableLiveData<>();
     public MutableLiveData<String>
             username = new MutableLiveData<>(),
@@ -43,6 +49,7 @@ public class RegisterActivityViewModel extends AndroidViewModel {
     }
 
     public void sendPost(String username, final String email, String password) {
+        uiLiveData.setValue(UIChange.LOADING);
         userAPI = RetrofitClient.getRetrofitInstance().create(UserAPI.class);
         User newUser = new User(username, email, password);
         Log.d("Register User", "sendPost: " + newUser.toString());
@@ -51,14 +58,14 @@ public class RegisterActivityViewModel extends AndroidViewModel {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     showResponse(response.body().toString());
-                    uiLiveData.setValue("Succes");
+                    uiLiveData.setValue(UIChange.SUCCES);
                     Log.i("Register User", "User submitted to API. " + response.body().toString());
                 } else {
+                    uiLiveData.setValue(UIChange.FAILED);
                     try {
                         Gson gson = new Gson();
                         ServerError error=gson.fromJson(response.errorBody().charStream(),ServerError.class);
                         serverError.setValue(error.getError());
-//                        onEmailError();
                     } catch (Exception e) {
                         Log.d("RegisterException", "onResponse: " + e.getMessage());
                     }
@@ -67,6 +74,7 @@ public class RegisterActivityViewModel extends AndroidViewModel {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                uiLiveData.setValue(UIChange.FAILED);
                 Log.e("Register User", "Unable to submit user to API. ");
             }
         });
@@ -86,10 +94,6 @@ public class RegisterActivityViewModel extends AndroidViewModel {
         INVALID_MAIL,
         PASSWORDS_NO_MATCH,
         SUCCES
-    }
-
-    public void onEmailError(){
-        email.setValue("");
     }
 
     public void onRegisterClick() {

@@ -7,6 +7,9 @@
         <variable
             name="booksViewModel"
             type="com.hpmtutorial.hpmbooksapp.viewmodel.BooksActivityViewModel" />
+        <variable
+            name="adpt"
+            type="com.hpmtutorial.hpmbooksapp.view.adapter.BooksRecyclerViewAdapter" />
     </data>
 
     <RelativeLayout
@@ -17,7 +20,9 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/books_recyclerview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:adapter="@{adpt}">
+            <!--android:data = "@={booksViewModel.mutableLiveDataBooks}">-->
 
         </androidx.recyclerview.widget.RecyclerView>
 
@@ -29,6 +34,25 @@
             android:layout_margin="64dp"
             android:src="@drawable/ic_add"
             android:onClick="@{()->booksViewModel.onAddClick()}"/>
+
+        <FrameLayout
+            android:id="@+id/books_overlay_view_loading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.4"
+            android:animateLayoutChanges="true"
+            android:background="#000000"
+            android:visibility="gone"
+            android:elevation="24dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+
+        </FrameLayout>
 
     </RelativeLayout>
 </layout>
