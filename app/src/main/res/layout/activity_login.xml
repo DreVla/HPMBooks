@@ -10,6 +10,16 @@
     </data>
 
     <RelativeLayout
+        android:id="@+id/login_large_layout"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".view.LoginActivity">
@@ -87,9 +97,10 @@
             android:focusable="true"
             android:onClick="@{()->loginViewModel.onRegisterClick()}"/>
 
-        <include layout="@layout/loading_layout"/>
-
     </RelativeLayout>
 
+    </ScrollView>
 
+        <include layout="@layout/loading_layout" />
+    </RelativeLayout>
 </layout>

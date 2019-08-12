@@ -1,5 +1,17 @@
 package com.hpmtutorial.hpmbooksapp.view;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.widget.FrameLayout;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,24 +21,11 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.view.animation.AlphaAnimation;
-import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
-
 import com.hpmtutorial.hpmbooksapp.R;
 import com.hpmtutorial.hpmbooksapp.databinding.ActivityBooksBinding;
-import com.hpmtutorial.hpmbooksapp.databinding.ActivityRegisterBinding;
 import com.hpmtutorial.hpmbooksapp.model.Book;
-import com.hpmtutorial.hpmbooksapp.viewmodel.BooksActivityViewModel;
 import com.hpmtutorial.hpmbooksapp.view.adapter.BooksRecyclerViewAdapter;
-import com.hpmtutorial.hpmbooksapp.viewmodel.RegisterActivityViewModel;
+import com.hpmtutorial.hpmbooksapp.viewmodel.BooksActivityViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +41,7 @@ public class BooksActivity extends AppCompatActivity {
     private FrameLayout loadingOverlay;
     private AlphaAnimation inAnimation;
     private AlphaAnimation outAnimation;
-//    Add viewmodel
+    //    Add viewmodel
     private BooksActivityViewModel booksActivityViewModel;
 
     @Override
@@ -54,7 +53,7 @@ public class BooksActivity extends AppCompatActivity {
 
         binding.setLifecycleOwner(this);
         binding.setBooksViewModel(booksActivityViewModel);
-      
+
         loadingOverlay = findViewById(R.id.overlay_loading_view);
         recyclerViewBooks = findViewById(R.id.books_recyclerview);
         recyclerViewBooks.setHasFixedSize(true);
@@ -87,11 +86,38 @@ public class BooksActivity extends AppCompatActivity {
 
     }
 
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.books_log_out:
+                logOut();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void logOut() {
+        Context context = this;
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(R.string.auth_token), null);
+        editor.apply();
+        Intent loginIntent = new Intent(this, LoginActivity.class);
+        startActivity(loginIntent);
+    }
+
     private void observeUIChange(final Context context) {
         booksActivityViewModel.uiChangeMutableLiveData.observe(this, new Observer<BooksActivityViewModel.uiChange>() {
             @Override
             public void onChanged(BooksActivityViewModel.uiChange uiChange) {
-                switch (uiChange){
+                switch (uiChange) {
                     case LOADING:
                         startAnimation();
                         break;
@@ -133,11 +159,11 @@ public class BooksActivity extends AppCompatActivity {
         booksActivityViewModel.mutableLiveDataBooks.observe(this, new Observer<List<Book>>() {
             @Override
             public void onChanged(List<Book> books) {
-                if(bookList.isEmpty()){
+                if (bookList.isEmpty()) {
                     bookList.addAll(books);
                     rvAdapter.notifyDataSetChanged();
-                } else if(bookList.size() == books.size()-1){
-                    bookList.add(books.get(books.size()-1));
+                } else if (bookList.size() == books.size() - 1) {
+                    bookList.add(books.get(books.size() - 1));
                     rvAdapter.notifyDataSetChanged();
                 } else {
                     rvAdapter.setBooksList(books);
@@ -147,10 +173,10 @@ public class BooksActivity extends AppCompatActivity {
         });
     }
 
-    public void loadBooks(){
+    public void loadBooks() {
         SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         token = sharedPref.getString(getString(R.string.auth_token), null);
-        if(token != null){
+        if (token != null) {
             booksActivityViewModel.sendGet(token);
         }
     }
@@ -161,14 +187,14 @@ public class BooksActivity extends AppCompatActivity {
         loadBooks();
     }
 
-    public void startAnimation(){
+    public void startAnimation() {
         inAnimation = new AlphaAnimation(0f, 1f);
         inAnimation.setDuration(200);
         loadingOverlay.setAnimation(inAnimation);
         loadingOverlay.setVisibility(View.VISIBLE);
     }
 
-    public void endAnimation(){
+    public void endAnimation() {
         outAnimation = new AlphaAnimation(1f, 0f);
         outAnimation.setDuration(200);
         loadingOverlay.setAnimation(outAnimation);
