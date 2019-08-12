@@ -51,7 +51,7 @@ public class AddBookActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setMessage(errorMessage)
                         .setTitle(R.string.error_message)
-                        .setPositiveButton(R.string.retry, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                             }
@@ -73,7 +73,6 @@ public class AddBookActivity extends AppCompatActivity {
                         DataBindingAdapters.setErrorMessage(publisherLayour, getResources().getString(R.string.fill_fields));
                         break;
                     case SUCCESS:
-                        Log.d("AddBook", "onChanged: ends activity");
                         setResult(RESULT_OK);
                         finish();
                         break;
@@ -88,7 +87,6 @@ public class AddBookActivity extends AppCompatActivity {
         SharedPreferences sharedPref = getApplication().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         String token = sharedPref.getString(getString(R.string.auth_token), null);
         addBookActivityViewModel.setToken(token);
-        Log.d("TokenFromSHPRF", "getToken: " + token);
         return token;
     }
 }

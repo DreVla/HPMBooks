@@ -9,12 +9,10 @@
             type="com.hpmtutorial.hpmbooksapp.viewmodel.LoginActivityViewModel" />
     </data>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.LoginActivity"
-        android:orientation="vertical"
-        android:gravity="center">
+        tools:context=".view.LoginActivity">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/login_email_layout"
@@ -28,7 +26,6 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/login_email_edittext"
-                android:text="@={loginViewModel.email}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/login_email_layout"
@@ -48,11 +45,11 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/login_password_edittext"
-                android:text="@={loginViewModel.password}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/register_password"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:text="@={loginViewModel.password}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.appcompat.widget.AppCompatButton

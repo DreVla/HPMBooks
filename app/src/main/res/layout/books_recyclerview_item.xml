@@ -3,22 +3,63 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.cardview.widget.CardView
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="book"
+            type="com.hpmtutorial.hpmbooksapp.model.Book" />
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        android:elevation="8dp">
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
-            android:elevation="1dp"
-            app:cardCornerRadius="4dp">
+            android:elevation="8dp">
 
-        </LinearLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    </androidx.cardview.widget.CardView>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/books_recyclerview_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:textSize="24sp"
+                        android:text="@{book.title}"
+                        tools:text="Book Name" />
+
+                    <TextView
+                        android:id="@+id/books_recyclerview_author"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:text="@{book.author}"
+                        tools:text="By Author" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/book_remove_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/ic_remove"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="16dp" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
 
 
-</LinearLayout>
+    </LinearLayout>
+</layout>

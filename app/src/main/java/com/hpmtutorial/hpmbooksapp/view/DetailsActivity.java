@@ -50,7 +50,9 @@ public class DetailsActivity extends AppCompatActivity {
         titleEditText = findViewById(R.id.details_title_edittext);
         authorEditText = findViewById(R.id.details_author_edittext);
         publisherEditText = findViewById(R.id.details_publisher_edittext);
+
         loadingOverlay = findViewById(R.id.overlay_loading_view);
+
 
         setEditTexts(false);
         observeUIChange();

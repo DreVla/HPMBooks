@@ -67,7 +67,7 @@
             app:layout_constraintTop_toBottomOf="@+id/register_email_layout"
             app:passwordToggleEnabled="true"
             tools:layout_editor_absoluteX="24dp">
-
+          
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/register_pass_edittext"
                 android:layout_width="match_parent"
@@ -115,4 +115,5 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

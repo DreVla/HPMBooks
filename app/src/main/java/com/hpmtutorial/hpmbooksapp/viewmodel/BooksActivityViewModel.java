@@ -25,7 +25,10 @@ import retrofit2.Response;
 public class BooksActivityViewModel extends ViewModel {
 
     public enum uiChange{
-        ADD_BOOK
+        LOADING,
+        DONE,
+        ADD_BOOK,
+        DELETED_BOOK
     }
 
     private BookAPI bookAPI;
@@ -33,17 +36,40 @@ public class BooksActivityViewModel extends ViewModel {
     public MutableLiveData<uiChange> uiChangeMutableLiveData = new MutableLiveData<>();
 
     public void sendGet(String token){
+        uiChangeMutableLiveData.setValue(uiChange.LOADING);
         bookAPI = RetrofitClient.getRetrofitBooks(token).create(BookAPI.class);
         bookAPI.getAllBooks(token).enqueue(new Callback<List<Book>>() {
             @Override
             public void onResponse(Call<List<Book>> call, Response<List<Book>> response) {
                 mutableLiveDataBooks.setValue(response.body());
+                uiChangeMutableLiveData.setValue(uiChange.DONE);
             }
 
             @Override
             public void onFailure(Call<List<Book>> call, Throwable t) {
                 Log.d("Fail", "onFailure: Something wrong");
             }
+        });
+    }
+
+    public void sendDelete(String token, String id){
+        bookAPI = RetrofitClient.getRetrofitBooks(token).create(BookAPI.class);
+        bookAPI.deleteBook(token, id).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful()){
+                    Log.d("DeleteSucces", "onResponse: Delete success");
+                    uiChangeMutableLiveData.setValue(uiChange.DELETED_BOOK);
+                }else{
+                    Log.d("Delete failed", "onResponse: Delete failed");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("DeleteBook", "Unable to delete book!");
+            }
+
         });
     }
 

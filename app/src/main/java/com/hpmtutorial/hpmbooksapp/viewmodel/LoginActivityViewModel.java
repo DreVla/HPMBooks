@@ -19,7 +19,15 @@ import retrofit2.Response;
 
 public class LoginActivityViewModel extends ViewModel {
 
-    public MutableLiveData<String> uiLiveData = new MutableLiveData<>();
+    public enum UIChange{
+        LOAD,
+        CHANGE,
+        REGISTER,
+        NOACTION
+    }
+
+    public MutableLiveData<UIChange> uiLiveData = new MutableLiveData<>();
+    public MutableLiveData<String> tokenReceived = new MutableLiveData<>();
     public MutableLiveData<String>
             email = new MutableLiveData<>(),
             password = new MutableLiveData<>(),
@@ -27,6 +35,8 @@ public class LoginActivityViewModel extends ViewModel {
             passwordError = new MutableLiveData<>();
     public MutableLiveData<String> serverError = new MutableLiveData<>();
     private String token;
+
+
 
 
     public void sendPost(String email, String password) {
@@ -41,7 +51,8 @@ public class LoginActivityViewModel extends ViewModel {
                         //use your header value
                         Log.d("Login Token", "onResponse: token is " + token);
                     }
-                    uiLiveData.setValue(token);
+                    tokenReceived.setValue(token);
+                    uiLiveData.setValue(UIChange.CHANGE);
                 } else {
                     try {
                         Gson gson = new Gson();
@@ -55,6 +66,7 @@ public class LoginActivityViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
+                serverError.setValue("Login Failed");
                 Log.e("Login User", "Login failed");
             }
         });
@@ -71,9 +83,14 @@ public class LoginActivityViewModel extends ViewModel {
             if(!Patterns.EMAIL_ADDRESS.matcher(email.getValue()).matches()) {
                 emailError.setValue("Please input valid email!");
             } else {
+                uiLiveData.setValue(UIChange.LOAD);
                 sendPost(email.getValue(), password.getValue());
             }
         }
+    }
+
+    public void onRegisterClick(){
+        uiLiveData.setValue(UIChange.REGISTER);
     }
 
 }

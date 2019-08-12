@@ -5,11 +5,11 @@
     android:id="@+id/layout">
 
     <data>
-
         <variable
             name="detailsViewModel"
             type="com.hpmtutorial.hpmbooksapp.viewmodel.DetailsViewModel" />
     </data>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -18,6 +18,7 @@
         android:focusableInTouchMode="true"
         android:orientation="vertical"
         tools:context=".view.DetailsActivity">
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/details_title_layout"
@@ -34,11 +35,13 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/details_title_edittext"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/add_book_title"
                 android:inputType="text"
                 android:text="@={detailsViewModel.title}" />
+
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -57,6 +60,7 @@
                 android:hint="@string/add_book_author"
                 android:inputType="text"
                 android:text="@={detailsViewModel.author}" />
+
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -66,7 +70,7 @@
             android:layout_margin="24dp"
             app:layout_constraintTop_toBottomOf="@+id/details_author_layout"
             app:passwordToggleEnabled="true">
-
+          
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/details_publisher_edittext"
                 android:layout_width="match_parent"
