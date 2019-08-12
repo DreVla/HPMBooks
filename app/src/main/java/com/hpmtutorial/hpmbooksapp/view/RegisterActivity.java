@@ -40,6 +40,7 @@ public class RegisterActivity extends AppCompatActivity {
         emailLayout = findViewById(R.id.register_email_layout);
         passwordLayout = findViewById(R.id.register_pass_layout);
         passwordCheckLayout = findViewById(R.id.register_passcheck_layout);
+        loadingOverlay = findViewById(R.id.overlay_loading_view);
 
         registerUIObserver();
         registerErrorObserver();

@@ -1,16 +1,11 @@
 package com.hpmtutorial.hpmbooksapp.viewmodel;
 
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.Patterns;
 
-import androidx.databinding.BindingAdapter;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 import com.hpmtutorial.hpmbooksapp.model.Login;
 import com.hpmtutorial.hpmbooksapp.model.User;
@@ -18,12 +13,6 @@ import com.hpmtutorial.hpmbooksapp.model.network.RetrofitClient;
 import com.hpmtutorial.hpmbooksapp.model.network.ServerError;
 import com.hpmtutorial.hpmbooksapp.model.network.UserAPI;
 
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.util.prefs.Preferences;
-
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
