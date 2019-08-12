@@ -1,52 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.cardview.widget.CardView
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="book"
+            type="com.hpmtutorial.hpmbooksapp.model.Book" />
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        android:elevation="8dp">
+        android:orientation="vertical">
 
-        <RelativeLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:elevation="8dp">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/books_recyclerview_title"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:textSize="24sp"
-                    tools:text="Book Name" />
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/books_recyclerview_author"
+                    <TextView
+                        android:id="@+id/books_recyclerview_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:textSize="24sp"
+                        android:text="@{book.title}"
+                        tools:text="Book Name" />
+
+                    <TextView
+                        android:id="@+id/books_recyclerview_author"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:text="@{book.author}"
+                        tools:text="By Author" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/book_remove_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    tools:text="By Author" />
-
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/book_remove_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:src="@drawable/ic_remove"
-                android:layout_centerInParent="true"
-                android:layout_margin="16dp"/>
-        </RelativeLayout>
-    </androidx.cardview.widget.CardView>
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/ic_remove"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="16dp" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
 
 
-</LinearLayout>
+    </LinearLayout>
+</layout>

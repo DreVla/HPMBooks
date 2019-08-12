@@ -25,6 +25,8 @@ import retrofit2.Response;
 public class BooksActivityViewModel extends ViewModel {
 
     public enum uiChange{
+        LOADING,
+        DONE,
         ADD_BOOK,
         DELETED_BOOK,
         FAILED
@@ -35,11 +37,13 @@ public class BooksActivityViewModel extends ViewModel {
     public MutableLiveData<uiChange> uiChangeMutableLiveData = new MutableLiveData<>();
 
     public void sendGet(String token){
+        uiChangeMutableLiveData.setValue(uiChange.LOADING);
         bookAPI = RetrofitClient.getRetrofitBooks(token).create(BookAPI.class);
         bookAPI.getAllBooks(token).enqueue(new Callback<List<Book>>() {
             @Override
             public void onResponse(Call<List<Book>> call, Response<List<Book>> response) {
                 mutableLiveDataBooks.setValue(response.body());
+                uiChangeMutableLiveData.setValue(uiChange.DONE);
             }
 
             @Override

@@ -6,6 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +29,9 @@ public class RegisterActivity extends AppCompatActivity {
 
     private RegisterActivityViewModel registerActivityViewModel;
     private TextInputLayout usernameLayout, emailLayout, passwordLayout, passwordCheckLayout;
+    private FrameLayout loadingOverlay;
+    private AlphaAnimation inAnimation;
+    private AlphaAnimation outAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +46,7 @@ public class RegisterActivity extends AppCompatActivity {
         emailLayout = findViewById(R.id.register_email_layout);
         passwordLayout = findViewById(R.id.register_pass_layout);
         passwordCheckLayout = findViewById(R.id.register_passcheck_layout);
+        loadingOverlay = findViewById(R.id.register_overlay_view_loading);
 
         registerUIObserver();
         registerErrorObserver();
@@ -90,13 +97,25 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void registerUIObserver(){
-        final Observer<String> uiChangeListener = new Observer<String>() {
+        final Observer<RegisterActivityViewModel.UIChange> uiChangeListener = new Observer<RegisterActivityViewModel.UIChange>() {
             @Override
-            public void onChanged(@Nullable final String status) {
+            public void onChanged(@Nullable final RegisterActivityViewModel.UIChange status) {
                 // Update UI
-                Toast.makeText(RegisterActivity.this, status, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
+                switch (status){
+                    case LOADING:
+                        startAnimation();
+                        break;
+                    case SUCCES:
+                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                        startActivity(intent);
+                        endAnimation();
+                        break;
+                    case FAILED:
+                        endAnimation();
+                        break;
+                    default:
+                }
+
             }
         };
         registerActivityViewModel.uiLiveData.observe(this, uiChangeListener);
@@ -110,7 +129,7 @@ public class RegisterActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setMessage(errorMessage)
                         .setTitle(R.string.error_message)
-                        .setPositiveButton(R.string.retry, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                             }
@@ -121,5 +140,20 @@ public class RegisterActivity extends AppCompatActivity {
             }
         };
         registerActivityViewModel.serverError.observe(this, serverErrorListener);
+    }
+
+
+    public void startAnimation(){
+        inAnimation = new AlphaAnimation(0f, 1f);
+        inAnimation.setDuration(200);
+        loadingOverlay.setAnimation(inAnimation);
+        loadingOverlay.setVisibility(View.VISIBLE);
+    }
+
+    public void endAnimation(){
+        outAnimation = new AlphaAnimation(1f, 0f);
+        outAnimation.setDuration(200);
+        loadingOverlay.setAnimation(outAnimation);
+        loadingOverlay.setVisibility(View.GONE);
     }
 }

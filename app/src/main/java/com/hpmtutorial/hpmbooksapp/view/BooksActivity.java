@@ -15,7 +15,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 
 import com.hpmtutorial.hpmbooksapp.R;
 import com.hpmtutorial.hpmbooksapp.databinding.ActivityBooksBinding;
@@ -32,10 +35,13 @@ public class BooksActivity extends AppCompatActivity {
 
     private RecyclerView recyclerViewBooks;
     private List<Book> bookList;
-    private RecyclerView.Adapter rvAdapter;
+    private BooksRecyclerViewAdapter rvAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private String token;
 
+    private FrameLayout loadingOverlay;
+    private AlphaAnimation inAnimation;
+    private AlphaAnimation outAnimation;
 //    Add viewmodel
     private BooksActivityViewModel booksActivityViewModel;
 
@@ -49,6 +55,7 @@ public class BooksActivity extends AppCompatActivity {
         binding.setLifecycleOwner(this);
         binding.setBooksViewModel(booksActivityViewModel);
 
+        loadingOverlay = findViewById(R.id.books_overlay_view_loading);
         recyclerViewBooks = findViewById(R.id.books_recyclerview);
         recyclerViewBooks.setHasFixedSize(true);
 
@@ -73,7 +80,7 @@ public class BooksActivity extends AppCompatActivity {
                 booksActivityViewModel.sendDelete(token, rvAdapter.getBookId(adapterPosition));
             }
         });
-        recyclerViewBooks.setAdapter(rvAdapter);
+        binding.setAdpt(rvAdapter);
 
         observeBooks();
         observeUIChange(this);
@@ -85,8 +92,13 @@ public class BooksActivity extends AppCompatActivity {
             @Override
             public void onChanged(BooksActivityViewModel.uiChange uiChange) {
                 switch (uiChange){
+                    case LOADING:
+                        startAnimation();
+                        break;
+                    case DONE:
+                        endAnimation();
+                        break;
                     case ADD_BOOK:
-                        Log.d("AddBook", "onChanged: creates Intent");
                         Intent intent = new Intent(getApplicationContext(), AddBookActivity.class);
                         startActivityForResult(intent, 1);
                         break;
@@ -114,7 +126,6 @@ public class BooksActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("AddBook", "onActivityResult: enters activity result");
         loadBooks();
     }
 
@@ -128,6 +139,9 @@ public class BooksActivity extends AppCompatActivity {
                 } else if(bookList.size() == books.size()-1){
                     bookList.add(books.get(books.size()-1));
                     rvAdapter.notifyDataSetChanged();
+                } else {
+                    rvAdapter.setBooksList(books);
+                    rvAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -139,5 +153,25 @@ public class BooksActivity extends AppCompatActivity {
         if(token != null){
             booksActivityViewModel.sendGet(token);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadBooks();
+    }
+
+    public void startAnimation(){
+        inAnimation = new AlphaAnimation(0f, 1f);
+        inAnimation.setDuration(200);
+        loadingOverlay.setAnimation(inAnimation);
+        loadingOverlay.setVisibility(View.VISIBLE);
+    }
+
+    public void endAnimation(){
+        outAnimation = new AlphaAnimation(1f, 0f);
+        outAnimation.setDuration(200);
+        loadingOverlay.setAnimation(outAnimation);
+        loadingOverlay.setVisibility(View.GONE);
     }
 }
