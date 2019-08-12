@@ -14,6 +14,15 @@
         android:layout_height="match_parent"
         tools:context=".view.LoginActivity">
 
+        <ImageView
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:layout_above="@+id/login_email_layout"
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="-174dp"
+            android:src="@drawable/logo2" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/login_email_layout"
             android:layout_width="match_parent"
