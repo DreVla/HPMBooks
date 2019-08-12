@@ -54,8 +54,8 @@ public class BooksActivity extends AppCompatActivity {
 
         binding.setLifecycleOwner(this);
         binding.setBooksViewModel(booksActivityViewModel);
-
-        loadingOverlay = findViewById(R.id.books_overlay_view_loading);
+      
+        loadingOverlay = findViewById(R.id.overlay_loading_view);
         recyclerViewBooks = findViewById(R.id.books_recyclerview);
         recyclerViewBooks.setHasFixedSize(true);
 

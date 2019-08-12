@@ -48,7 +48,9 @@ public class LoginActivity extends AppCompatActivity {
 
         emailLayout = findViewById(R.id.login_email_layout);
         passwordLayout = findViewById(R.id.login_password_layout);
-        loadingOverlay = findViewById(R.id.login_overlay_view_loading);
+
+        loadingOverlay = findViewById(R.id.overlay_loading_view);
+
 
         setTokenListener();
         setUIListener();
