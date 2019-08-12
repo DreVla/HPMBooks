@@ -6,13 +6,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.View;
-import android.view.ViewOverlay;
 import android.view.animation.AlphaAnimation;
-import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.Toast;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -29,6 +26,7 @@ import com.hpmtutorial.hpmbooksapp.viewmodel.LoginActivityViewModel;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private RelativeLayout container;
     private LoginActivityViewModel loginActivityViewModel;
     private TextInputLayout emailLayout, passwordLayout;
     private ActivityLoginBinding binding;
@@ -48,15 +46,32 @@ public class LoginActivity extends AppCompatActivity {
 
         emailLayout = findViewById(R.id.login_email_layout);
         passwordLayout = findViewById(R.id.login_password_layout);
+        container = findViewById(R.id.login_large_layout);
 
         loadingOverlay = findViewById(R.id.overlay_loading_view);
 
+        if(checkIfLogin()){
+            startAnimation();
+            Intent booksIntent = new Intent(getApplicationContext(), BooksActivity.class);
+            endAnimation();
+            startActivity(booksIntent);
+            loginActivityViewModel.uiLiveData.setValue(LoginActivityViewModel.UIChange.NOACTION);
+            finish();
+        } else {
+            container.setVisibility(View.VISIBLE);
+            setTokenListener();
+            setUIListener();
+            setUIErrorListener();
+            setServerErrorListener(this);
+        }
+    }
 
-        setTokenListener();
-        setUIListener();
-        setUIErrorListener();
-        setServerErrorListener(this);
-
+    private boolean checkIfLogin() {
+        SharedPreferences sharedPref = getApplication().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        String token = sharedPref.getString(getString(R.string.auth_token), null);
+        if(token == null)
+            return false;
+        else return true;
     }
 
     private void setUIErrorListener() {
@@ -83,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
         final Observer<LoginActivityViewModel.UIChange> uiChangeListener = new Observer<LoginActivityViewModel.UIChange>() {
             @Override
             public void onChanged(@Nullable final LoginActivityViewModel.UIChange msg) {
-                switch (msg){
+                switch (msg) {
                     case LOAD:
                         startAnimation();
                         break;
@@ -104,7 +119,7 @@ public class LoginActivity extends AppCompatActivity {
         loginActivityViewModel.uiLiveData.observe(this, uiChangeListener);
     }
 
-    private void setTokenListener(){
+    private void setTokenListener() {
         final Observer<String> tokenObserver = new Observer<String>() {
             @Override
             public void onChanged(@Nullable final String token) {
@@ -114,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
         loginActivityViewModel.tokenReceived.observe(this, tokenObserver);
     }
 
-    public void setServerErrorListener(final Context context){
+    public void setServerErrorListener(final Context context) {
         final Observer<String> serverErrorListener = new Observer<String>() {
             @Override
             public void onChanged(@Nullable final String errorMessage) {
@@ -136,7 +151,7 @@ public class LoginActivity extends AppCompatActivity {
         loginActivityViewModel.serverError.observe(this, serverErrorListener);
     }
 
-    public void saveToSharedPref(String token){
+    public void saveToSharedPref(String token) {
         Context context = this;
         SharedPreferences sharedPref = context.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
@@ -145,14 +160,14 @@ public class LoginActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    public void startAnimation(){
+    public void startAnimation() {
         inAnimation = new AlphaAnimation(0f, 1f);
         inAnimation.setDuration(200);
         loadingOverlay.setAnimation(inAnimation);
         loadingOverlay.setVisibility(View.VISIBLE);
     }
 
-    public void endAnimation(){
+    public void endAnimation() {
         outAnimation = new AlphaAnimation(1f, 0f);
         outAnimation.setDuration(200);
         loadingOverlay.setAnimation(outAnimation);
