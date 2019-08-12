@@ -1,6 +1,7 @@
 package com.hpmtutorial.hpmbooksapp.view;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -81,10 +83,11 @@ public class BooksActivity extends AppCompatActivity {
         binding.setAdpt(rvAdapter);
 
         observeBooks();
-        observeUIChange();
+        observeUIChange(this);
+
     }
 
-    private void observeUIChange() {
+    private void observeUIChange(final Context context) {
         booksActivityViewModel.uiChangeMutableLiveData.observe(this, new Observer<BooksActivityViewModel.uiChange>() {
             @Override
             public void onChanged(BooksActivityViewModel.uiChange uiChange) {
@@ -101,6 +104,19 @@ public class BooksActivity extends AppCompatActivity {
                         break;
                     case DELETED_BOOK:
                         loadBooks();
+                        break;
+                    case FAILED:
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        builder.setMessage("Failed to delete!")
+                                .setTitle(R.string.error_message)
+                                .setPositiveButton(R.string.retry, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                    }
+                                });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                        break;
                     default:
                 }
             }
