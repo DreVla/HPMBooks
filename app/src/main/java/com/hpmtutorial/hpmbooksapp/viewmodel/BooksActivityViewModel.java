@@ -28,7 +28,8 @@ public class BooksActivityViewModel extends ViewModel {
         LOADING,
         DONE,
         ADD_BOOK,
-        DELETED_BOOK
+        DELETED_BOOK,
+        FAILED
     }
 
     private BookAPI bookAPI;
@@ -61,6 +62,7 @@ public class BooksActivityViewModel extends ViewModel {
                     Log.d("DeleteSucces", "onResponse: Delete success");
                     uiChangeMutableLiveData.setValue(uiChange.DELETED_BOOK);
                 }else{
+                    uiChangeMutableLiveData.setValue(uiChange.FAILED);
                     Log.d("Delete failed", "onResponse: Delete failed");
                 }
             }
