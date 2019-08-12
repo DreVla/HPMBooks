@@ -11,7 +11,7 @@
     </data>
 
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".view.AddBookActivity"
@@ -23,15 +23,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="24dp"
-            app:passwordToggleEnabled="true">
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.35000002"
+            app:passwordToggleEnabled="true"
+            tools:layout_editor_absoluteX="24dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/add_book_title_edittext"
-                android:text="@={addBookViewModel.title}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/add_book_title"
-                android:inputType="text" />
+                android:inputType="text"
+                android:text="@={addBookViewModel.title}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -39,15 +45,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="24dp"
+            app:layout_constraintTop_toBottomOf="@+id/add_book_title_layout"
             app:passwordToggleEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/add_book_author_edittext"
-                android:text="@={addBookViewModel.author}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/add_book_author"
-                android:inputType="text" />
+                android:inputType="text"
+                android:text="@={addBookViewModel.author}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -55,31 +62,30 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="24dp"
+            app:layout_constraintTop_toBottomOf="@+id/add_book_author_layout"
             app:passwordToggleEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/add_book_publisher_edittext"
-                android:text="@={addBookViewModel.publisher}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/add_book_publisher"
-                android:inputType="text" />
+                android:inputType="text"
+                android:text="@={addBookViewModel.publisher}" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:layout_width="wrap_content"
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:background="@drawable/button_shape"
+            android:layout_gravity="end"
+            android:layout_margin="24dp"
             android:elevation="12dp"
             android:onClick="@{()->addBookViewModel.onAddBookClick()}"
-            android:shadowColor="#000000"
-            android:shadowDx="0"
-            android:shadowDy="0"
-            android:shadowRadius="5"
             android:text="@string/add_book_button"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            app:backgroundTint="@color/colorAccent"
+            app:layout_constraintTop_toBottomOf="@+id/add_book_publisher_layout" />
 
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

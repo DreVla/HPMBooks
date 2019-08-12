@@ -33,26 +33,12 @@
             android:layout_alignParentEnd="true"
             android:layout_margin="64dp"
             android:src="@drawable/ic_add"
+            android:elevation="6dp"
             android:onClick="@{()->booksViewModel.onAddClick()}"/>
 
-        <FrameLayout
-            android:id="@+id/books_overlay_view_loading"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha="0.4"
-            android:animateLayoutChanges="true"
-            android:background="#000000"
-            android:visibility="gone"
-            android:elevation="24dp"
-            android:clickable="true"
-            android:focusable="true">
 
-            <ProgressBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" />
+        <include layout="@layout/loading_layout"/>
 
-        </FrameLayout>
 
     </RelativeLayout>
 </layout>
