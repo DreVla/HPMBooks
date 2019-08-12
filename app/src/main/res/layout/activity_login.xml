@@ -9,57 +9,98 @@
             type="com.hpmtutorial.hpmbooksapp.viewmodel.LoginActivityViewModel" />
     </data>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.LoginActivity"
-        android:orientation="vertical"
-        android:gravity="center">
+        tools:context=".view.LoginActivity">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/login_email_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:passwordToggleEnabled="true"
-            android:layout_margin="16dp">
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="256dp"
+            android:layout_marginHorizontal="16dp"
+            app:passwordToggleEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/login_email_edittext"
-                android:text="@={loginViewModel.email}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/register_email"/>
+                android:layout_alignStart="@+id/login_email_layout"
+                android:hint="@string/register_email"
+                android:text="@={loginViewModel.email}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/login_password_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:passwordToggleEnabled="true"
-            android:layout_margin="16dp">
+            android:layout_below="@id/login_email_layout"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="16dp"
+            app:passwordToggleEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/login_password_edittext"
-                android:text="@={loginViewModel.password}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/register_password"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:text="@={loginViewModel.password}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
+            android:id="@+id/login_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_shape"
-            android:text="@string/welcome_view_login_string"
+            android:layout_below="@id/login_password_layout"
+            android:layout_centerInParent="true"
             android:layout_margin="16dp"
+            android:background="@drawable/button_shape"
+            android:elevation="12dp"
             android:onClick="@{()->loginViewModel.onLoginClick()}"
-            android:textColor="@android:color/white"
             android:shadowColor="#000000"
             android:shadowDx="0"
             android:shadowDy="0"
             android:shadowRadius="5"
-            android:elevation="12dp" />
+            android:text="@string/welcome_view_login_string"
+            android:textColor="@android:color/white" />
 
-    </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_account"
+            android:textColor="@color/colorAccent"
+            android:layout_below="@id/login_button"
+            android:layout_centerInParent="true"
+            android:layout_margin="16dp"
+            android:textSize="18sp"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="@{()->loginViewModel.onRegisterClick()}"/>
+
+        <FrameLayout
+            android:id="@+id/login_overlay_view_loading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.4"
+            android:animateLayoutChanges="true"
+            android:background="#000000"
+            android:visibility="gone"
+            android:elevation="24dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+
+        </FrameLayout>
+
+    </RelativeLayout>
+
+
 </layout>
